@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..')))
 
 try:
-    from services.config import ConfigCenter
+    from domain.config.service import ConfigCenter
 except ImportError:
     print("错误: 无法导入 ConfigCenter。请确保项目结构正确。")
     sys.exit(1)
