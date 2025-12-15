@@ -72,7 +72,7 @@ async def get_db_version():
         print("警告: 未找到 `configurations` 表。假设版本为 v1.0.0。")
         return "v1.0.0"
 
-    version = await ConfigCenter.get("APP_VERSION")
+    version = await ConfigService.get("APP_VERSION")
     return version if version else "v1.0.0"
 
 
@@ -80,7 +80,7 @@ async def set_db_version(version: str):
     """
     在 'configurations' 表中更新数据库版本。
     """
-    await ConfigCenter.set("APP_VERSION", version)
+    await ConfigService.set("APP_VERSION", version)
     print(f"数据库版本成功更新至 {version}。")
 
 
