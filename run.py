@@ -23,6 +23,17 @@ DB_URL = f"sqlite://{DB_PATH}"
 MIGRATION_FILE_PATTERN = re.compile(
     r"from_(v\d+\.\d+\.\d+)_to_(v\d+\.\d+\.\d+)\.py")
 
+def patch_aiosqlite_for_tortoise() -> None:
+    import aiosqlite
+
+    if hasattr(aiosqlite.Connection, "start"):
+        return
+
+    def start(self) -> None:  # type: ignore[no-redef]
+        if not self._thread.is_alive():
+            self._thread.start()
+
+    aiosqlite.Connection.start = start  # type: ignore[attr-defined]
 
 def version_to_tuple(v: str) -> tuple:
     """将版本字符串 'vX.Y.Z' 转换为可比较的元组 (X, Y, Z)"""
@@ -141,4 +152,5 @@ async def run_migrations():
 
 if __name__ == "__main__":
     print("开始数据库迁移检查...")
+    patch_aiosqlite_for_tortoise()
     asyncio.run(run_migrations())
